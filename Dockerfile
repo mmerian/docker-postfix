@@ -22,7 +22,9 @@ ENV POSTCONF_smtpd_sasl_tls_security_options noanonymous
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends postfix
+    apt-get install -y --no-install-recommends ca-certificates postfix && \
+    apt-get clean && \
+    mkdir -p $POSTFIX_CONF_DIR
 
 VOLUME $POSTFIX_CONF_DIR
 
