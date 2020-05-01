@@ -2,7 +2,6 @@ FROM debian:buster-slim
 
 ENV POSTFIX_HOSTNAME localhost
 ENV POSTFIX_DOMAIN localhost
-ENV POSTFIX_CONF_DIR /usr/local/etc/postfix
 
 # Postfix default configuration
 #
@@ -23,10 +22,12 @@ ENV POSTCONF_smtpd_sasl_tls_security_options noanonymous
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends ca-certificates postfix && \
-    apt-get clean && \
-    mkdir -p $POSTFIX_CONF_DIR
+    apt-get clean
 
-VOLUME $POSTFIX_CONF_DIR
+RUN mkdir -p /orig/etc && \
+    cp -r /etc/postfix /orig/etc
+
+VOLUME /etc/postfix
 
 COPY start-postfix.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/start-postfix.sh
