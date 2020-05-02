@@ -6,11 +6,11 @@ if [ ! "$(ls -A /etc/postfix)" ]; then
     cp -r /orig/etc/postfix/* /etc/postfix
 fi
 
-# Set configuration from env vars
-while read -r conf; do
-    echo postconf -c /etc/postfix "${conf:9}"
-    postconf "${conf:9}"
-done <<< `env|grep POSTCONF_`
+if [ ! -z "$PRE_EXEC"  ] && [ -x "$PRE_EXEC" ]; then
+    echo "Executing pre-exec $PRE_EXEC"
+    $PRE_EXEC
+fi
 
 # Start postfix
+echo "Starting postfix"
 postfix -c /etc/postfix start-fg
